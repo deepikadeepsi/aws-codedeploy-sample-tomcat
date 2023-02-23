@@ -1,11 +1,24 @@
-version: 0.1
+version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      java: corretto11
+    commands:
+      - echo "Install phase"
+  pre_build:
+    commands:
+      - echo "Pre-build phase"
   build:
     commands:
-      - echo Build completed on `date`
       - mvn package
-
+      - mvn clean package
+  post_build:
+    commands:
+      - echo "Post-build phase"
+      - aws elasticbeanstalk create-application-version --application-name my-tomcat-app --version-label v${CODEBUILD_BUILD_NUMBER} --source-bundle S3Bucket=my-tomcat-app-builds,S3Key=my-tomcat-app-${CODEBUILD_BUILD_NUMBER}.war
 artifacts:
   files:
-    - '**/*'
+    - target/my-tomcat-app-*.war
+  base-directory: target
+  discard-paths: yes
