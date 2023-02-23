@@ -5,20 +5,13 @@ phases:
     runtime-versions:
       java: corretto11
     commands:
-      - echo "Install phase"
-  pre_build:
-    commands:
-      - echo "Pre-build phase"
+      - echo "Installing Maven..."
+      - apt-get update
+      - apt-get install -y maven
   build:
     commands:
+      - echo "Building Tomcat application..."
       - mvn package
-      - mvn clean package
-  post_build:
-    commands:
-      - echo "Post-build phase"
-      - aws elasticbeanstalk create-application-version --application-name my-tomcat-app --version-label v${CODEBUILD_BUILD_NUMBER} --source-bundle S3Bucket=my-tomcat-app-builds,S3Key=my-tomcat-app-${CODEBUILD_BUILD_NUMBER}.war
 artifacts:
   files:
-    - target/my-tomcat-app-*.war
-  base-directory: target
-  discard-paths: yes
+    - target/*.war
