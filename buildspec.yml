@@ -1,17 +1,11 @@
-version: 0.2
+version: 0.1
 
 phases:
-  install:
-    runtime-versions:
-      java: corretto11
-    commands:
-      - echo "Installing Maven..."
-      - apt-get update
-      - apt-get install -y maven
   build:
     commands:
-      - echo "Building Tomcat application..."
+      - echo Build completed on `date`
       - mvn package
+
 artifacts:
   files:
-    - target/*.war
+    - '**/*'
